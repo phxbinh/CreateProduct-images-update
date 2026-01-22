@@ -40,11 +40,17 @@ export default async function handler(
     return res.status(403).json({ error: 'Admin access required' });
   }
 */
-const { userId, newRole } = req.body;
 
-    if (!userId || !newRole) {
-      return res.status(400).json({ error: 'Missing params' });
-    }
+const authHeader = req.headers.authorization;
+  const token = authHeader?.startsWith('Bearer ')
+    ? authHeader.slice(7)
+    : null;
+
+  if (!token) {
+    return res.status(401).json({ error: 'Missing access token' });
+  }
+
+
 
 
   /* =========================
