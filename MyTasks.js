@@ -527,7 +527,7 @@ function AuthPage() {
       (event, session) => {
         setUser(session?.user ?? null);
         if (session?.user) {
-          navigateTo("/dashboard");
+          //navigateTo("/dashboard");
         }
       }
     );
@@ -535,7 +535,7 @@ function AuthPage() {
     // Kiểm tra session ban đầu
     window.supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
-      if (session?.user) navigateTo("/dashboard");
+      //if (session?.user) navigateTo("/dashboard");
     });
 
     return () => {
