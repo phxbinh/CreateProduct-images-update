@@ -243,6 +243,54 @@ function ProductCreatePage() {
   const [variants, setVariants] = useState([]);
   const [loading, setLoading] = useState(false);
 
+async function loadUsers() {
+  try {
+    setLoading(true);
+    setError("");
+
+    const { data: { session } } =
+      await supabase.auth.getSession();
+
+    if (!session) {
+      throw new Error("Chưa đăng nhập");
+    }
+
+    const res = await fetch("/api/usersAdvance", {
+      headers: {
+        Authorization: `Bearer ${session.access_token}`
+      }
+    });
+
+    // ✅ XỬ LÝ STATUS Ở ĐÂY
+    if (res.status === 401) {
+      await supabase.auth.signOut();
+      navigate("/login");
+      return;
+    }
+
+    if (res.status === 403) {
+      throw new Error("Bạn không có quyền truy cập");
+    }
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Fetch users failed");
+    }
+
+    setUsers(data);
+  } catch (err) {
+    setError("Lỗi tải danh sách: " + err.message);
+  } finally {
+    setLoading(false);
+  }
+}
+
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+
 /*
   async function submitProduct() {
     try {
