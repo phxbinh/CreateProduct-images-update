@@ -137,6 +137,33 @@ function ProductDetailPage({ params }) {
     );
   }
 
+
+
+
+//load anh tu bucket
+// Trong component, ví dụ hiển thị thumbnail
+const getThumbnailUrl = (path) => {
+  if (!path) return ''; // fallback
+  const { data } = supabase.storage.from('product-images').getPublicUrl(path);
+  return data.publicUrl; // hoặc thêm transform: { width: 300, height: 300 }
+};
+
+// Sử dụng
+/*
+<img 
+  src={getThumbnailUrl(product.thumbnail_url)} 
+  alt="Thumbnail" 
+  style={{ maxWidth: '120px' }} 
+/>
+*/
+
+
+
+
+
+
+
+
   return h(
     "div",
     { className: "product-detail container" },
@@ -145,7 +172,8 @@ function ProductDetailPage({ params }) {
     h("div", { className: "product-hero" },
       h("div", { className: "product-image-wrapper" },
         h("img", {
-          src: product.thumbnail_url || "/assets/images/placeholder-large.svg",
+          //src: product.thumbnail_url || "/assets/images/placeholder-large.svg",
+          src: getThumbnailUrl(product.thumbnail_url),
           alt: product.name,
           className: "product-main-image",
           loading: "lazy",
