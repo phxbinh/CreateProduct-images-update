@@ -1,0 +1,163 @@
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.add-task-form {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  border: 2px dashed #aaa;
+  border-radius: 12px;
+  background-color: #f9f9f9;
+}
+
+.title-input {
+  width: 400px;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 0.8rem;
+}
+
+.file-selected {
+  margin-left: 8px;
+  color: green;
+  font-style: italic;
+}
+
+.btn-primary {
+  padding: 0.7rem 1.4rem;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-primary:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.task-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.task-item input[type="checkbox"] {
+  transform: scale(1.3);
+  cursor: pointer;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.pdf-download {
+  color: #0066cc;
+  text-decoration: underline;
+}
+
+.pdf-view {
+  font-size: 0.8em;
+  color: #666;
+}
+
+.current-pdf {
+  font-size: 0.9em;
+  color: #555;
+  margin: 0.5rem 0;
+}
+
+.current-pdf a {
+  margin-left: 8px;
+  color: #007bff;
+  text-decoration: underline;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 0.5rem;
+}
+
+.edit-actions {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-save {
+  background-color: #28a745;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-cancel {
+  background-color: #6c757d;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-edit {
+  background-color: #ffc107;
+  color: #212529;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-delete {
+  background-color: #dc3545;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.msg-error {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.msg-success {
+  color: green;
+  font-weight: bold;
+  text-align: center;
+  margin: 1rem 0;
+}
