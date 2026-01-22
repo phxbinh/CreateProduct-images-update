@@ -354,6 +354,7 @@ async function submitProduct() {
   }
 }
 */
+/*
 async function submitProduct() {
   try {
     setLoading(true);
@@ -394,7 +395,50 @@ async function submitProduct() {
     setLoading(false);
   }
 }
+*/
 
+async function submitProduct() {
+  try {
+    setLoading(true);
+
+    const payload = buildPayload(product, variants, attributes);
+
+    const {
+      data: { session },
+      error
+    } = await supabase.auth.getSession();
+
+    if (error) {
+      throw error;
+    }
+
+    if (!session || !session.access_token) {
+      throw new Error("Not authenticated");
+    }
+
+    const res = await fetch("/api/createProduct", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.error || "Create product failed");
+    }
+
+    alert("Product created successfully");
+    navigateTo("/");
+  } catch (e) {
+    console.error("Create product error:", e);
+    alert(e.message);
+  } finally {
+    setLoading(false);
+  }
+}
 
 
 
