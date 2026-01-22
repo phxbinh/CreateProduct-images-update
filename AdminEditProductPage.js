@@ -33,6 +33,8 @@ async function uploadProductThumbnail(productId, file) {
     });
 
   if (error) throw error;
+  
+  alert(filePath);
 
   // Trả về thuần path thay vì full URL
   return filePath;
@@ -110,6 +112,7 @@ function AdminProductEditPage({ params }) {
           product.id,
           thumbnailFile
         );
+        alert('thumbnail_url: '+thumbnail_url);
       }
 
       const { data: { session } } =
