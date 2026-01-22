@@ -242,7 +242,7 @@ function ProductCreatePage() {
   const [attributes, setAttributes] = useState([]);
   const [variants, setVariants] = useState([]);
   const [loading, setLoading] = useState(false);
-
+/*
 async function loadUsers() {
   try {
     setLoading(true);
@@ -289,7 +289,7 @@ async function loadUsers() {
   useEffect(() => {
     loadUsers();
   }, []);
-
+*/
 
 /*
   async function submitProduct() {
