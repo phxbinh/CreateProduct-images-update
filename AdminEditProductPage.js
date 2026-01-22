@@ -1,3 +1,4 @@
+/*
 async function uploadProductThumbnail(productId, file) {
   const fileExt = file.name.split(".").pop();
   const filePath = `products/${productId}.${fileExt}`;
@@ -17,6 +18,26 @@ async function uploadProductThumbnail(productId, file) {
 
   return data.publicUrl;
 }
+*/
+
+async function uploadProductThumbnail(productId, file) {
+  const fileExt = file.name.split(".").pop().toLowerCase(); // lowercase cho an toàn
+  const fileName = `${productId}.${fileExt}`; // ví dụ: 123.jpg
+  const filePath = `products/${fileName}`;   // thuần path: products/123.jpg
+
+  const { error } = await supabase.storage
+    .from("product-images")
+    .upload(filePath, file, {
+      upsert: true,              // cho phép overwrite thumbnail cũ
+      contentType: file.type,    // giữ MIME type đúng (image/jpeg, image/webp...)
+    });
+
+  if (error) throw error;
+
+  // Trả về thuần path thay vì full URL
+  return filePath;
+}
+
 
 function AdminProductEditPage({ params }) {
     /*
