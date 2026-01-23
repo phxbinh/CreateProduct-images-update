@@ -151,6 +151,12 @@ function AdminProductEditPage({ params }) {
       setSaving(false);
     }
   }
+  
+  const getThumbnailUrl = (path) => {
+  if (!path) return ''; // fallback
+  const { data } = supabase.storage.from('product-images').getPublicUrl(path);
+  return data.publicUrl; // hoặc thêm transform: { width: 300, height: 300 }
+};
 
   /* =========================
      Render
