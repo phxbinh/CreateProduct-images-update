@@ -64,7 +64,8 @@ function ProductCard({ product }) {
     // Image
     h("div", { className: "product-card__image-container" }, [
       h("img", {
-        src: thumbnail_url || "/assets/images/placeholder-product.svg",
+        //src: thumbnail_url || "/assets/images/placeholder-product.svg",
+        src: getThumbnailUrl(product.thumbnail_url) || "/assets/images/placeholder-product.svg",
         alt: name || "Sản phẩm",
         loading: "lazy",
         className: "product-card__image",
