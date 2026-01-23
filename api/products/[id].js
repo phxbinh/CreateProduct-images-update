@@ -8,10 +8,22 @@ export default async function handler(
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+/*
   const { id } = req.query;
   if (!id || typeof id !== 'string') {
     return res.status(400).json({ error: 'Invalid product id' });
   }
+*/
+let { id } = req.query;
+
+if (Array.isArray(id)) {
+  id = id[0];
+}
+
+if (!id || typeof id !== 'string') {
+  return res.status(400).json({ error: 'Invalid product id' });
+}
+
 
   // =========================
   // 1. Lấy token
