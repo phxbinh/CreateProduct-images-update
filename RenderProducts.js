@@ -39,6 +39,16 @@ function ProductCard({ product }) {
   function goToDetail() {
     if (slug) navigateTo(`/products/${slug}`);
   }
+  
+  
+  //load anh tu bucket
+// Trong component, ví dụ hiển thị thumbnail
+const getThumbnailUrl = (path) => {
+  if (!path) return ''; // fallback
+  const { data } = supabase.storage.from('product-images').getPublicUrl(path);
+  return data.publicUrl; // hoặc thêm transform: { width: 300, height: 300 }
+}
+
 
   return h(
     "div",
@@ -119,13 +129,6 @@ function ProductCard({ product }) {
   );
 }
 
-//load anh tu bucket
-// Trong component, ví dụ hiển thị thumbnail
-const getThumbnailUrl = (path) => {
-  if (!path) return ''; // fallback
-  const { data } = supabase.storage.from('product-images').getPublicUrl(path);
-  return data.publicUrl; // hoặc thêm transform: { width: 300, height: 300 }
-}
 
 
 
