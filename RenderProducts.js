@@ -43,12 +43,13 @@ function ProductCard({ product }) {
   
   //load anh tu bucket
 // Trong component, ví dụ hiển thị thumbnail
+/*
 const getThumbnailUrl = (path) => {
   if (!path) return ''; // fallback
   const { data } = supabase.storage.from('product-images').getPublicUrl(path);
   return data.publicUrl; // hoặc thêm transform: { width: 300, height: 300 }
 }
-
+*/
 
   return h(
     "div",
@@ -74,8 +75,8 @@ const getThumbnailUrl = (path) => {
     // Image
     h("div", { className: "product-card__image-container" }, [
       h("img", {
-        //src: thumbnail_url || "/assets/images/placeholder-product.svg",
-        src: getThumbnailUrl(product.thumbnail_url) || "/assets/images/placeholder-product.svg",
+        src: thumbnail_url || "/assets/images/placeholder-product.svg",
+        //src: getThumbnailUrl(product.thumbnail_url) || "/assets/images/placeholder-product.svg",
         alt: name || "Sản phẩm",
         loading: "lazy",
         className: "product-card__image",
