@@ -28,7 +28,7 @@ async function uploadProductThumbnail(productId, file) {
   const { error } = await supabase.storage
     .from("product-images")
     .upload(filePath, file, {
-      upsert: true,   //false           // cho phép overwrite thumbnail cũ
+      upsert: false,   //false           // cho phép overwrite thumbnail cũ
       contentType: file.type,    // giữ MIME type đúng (image/jpeg, image/webp...)
     });
 
