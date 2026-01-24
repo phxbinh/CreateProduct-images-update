@@ -163,7 +163,15 @@
 <!---->
 
 
-
+<script>
+  // Force render test message sau 1s
+  setTimeout(() => {
+    const app = document.getElementById('app');
+    if (app.innerHTML === '') {
+      app.innerHTML = '<h1 style="color:red; text-align:center;">TEST: Trang không trắng nữa! Session có thể ok, nhưng logic render bị lỗi.</h1>';
+    }
+  }, 2000);
+</script>
 
 
 
