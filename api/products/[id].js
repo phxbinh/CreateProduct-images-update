@@ -93,6 +93,7 @@ export default async function handler(
   }
 
   /* ---------------- CALL RPC ---------------- */
+/*
   const { error: rpcError } = await supabase.rpc(
     'admin_update_product',
     {
@@ -110,6 +111,69 @@ export default async function handler(
       error: rpcError.message,
     });
   }
+*/
+
+
+
+
+// Ví dụ trong PUT handler của /api/products/[id]
+
+try {
+  const { error: rpcError } = await supabase.rpc(
+    'admin_update_product',
+    {
+      payload: {
+        product_id: id,
+        expected_updated_at,
+        data,
+      },
+    }
+  );
+
+  if (rpcError) {
+    // rpcError là object từ Supabase: { message, code, details, hint }
+    console.error('RPC Error:', rpcError);
+    
+    // Xử lý các loại lỗi phổ biến
+    if (rpcError.message?.includes('modified by another user')) {
+      return res.json(
+        { error: 'Product was modified by another user. Please reload and try again.' },
+        { status: 409 } // Conflict cho optimistic lock fail
+      );
+    } else if (rpcError.message?.includes('required')) {
+      return res.json(
+        { error: rpcError.message },
+        { status: 400 } // Bad Request
+      );
+    } else {
+      return res.json(
+        { error: 'Failed to update product: ' + (rpcError.message || 'Unknown error') },
+        { status: 500 }
+      );
+    }
+  }
+
+  // Nếu không lỗi → success
+  return res.json({ success: true });
+
+} catch (err) {
+  // Catch các lỗi bất ngờ: network fail, supabase client error, JSON parse fail, etc.
+  console.error('Unexpected error during RPC:', err);
+  
+  return res.json(
+    { error: 'Server error: ' + (err.message || 'Unknown') },
+    { status: 500 }
+  );
+}
+
+
+
+
+
+
+
+
+
 
   return res.json({ success: true });
 }
