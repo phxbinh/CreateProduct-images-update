@@ -133,7 +133,7 @@ function AdminProductEditPage({ params }) {
           body: JSON.stringify({
             expected_updated_at: product.updated_at,
             data: {
-              ...form
+              ...form,
               thumbnail_url,
             },
           }),
