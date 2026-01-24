@@ -1,4 +1,4 @@
-
+/*
 async function uploadProductThumbnail(productId, file) {
   const fileExt = file.name.split(".").pop();
   const filePath = `products/${productId}.${fileExt}`;
@@ -18,8 +18,8 @@ async function uploadProductThumbnail(productId, file) {
 
   return data.publicUrl;
 }
+*/
 
-/*
 async function uploadProductThumbnail(productId, file) {
   const fileExt = file.name.split(".").pop().toLowerCase(); // lowercase cho an toàn
   const fileName = `${productId}.${fileExt}`; // ví dụ: 123.jpg
@@ -39,7 +39,7 @@ async function uploadProductThumbnail(productId, file) {
   // Trả về thuần path thay vì full URL
   return filePath;
 }
-*/
+
 
 async function uploadProductThumbnailViaApi(productId, file, session) {
   const form = new FormData();
