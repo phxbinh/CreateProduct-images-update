@@ -96,6 +96,12 @@ function AdminProductEditPage({ params }) {
   if (error) {
     return h("p", { style: { color: "red" } }, error);
   }
+  
+  const getThumbnailUrl = (path) => {
+  if (!path) return ''; // fallback
+  const { data } = supabase.storage.from('product-images').getPublicUrl(path);
+  return data.publicUrl; // hoặc thêm transform: { width: 300, height: 300 }
+};
 
   /* =========================
      Submit
@@ -222,7 +228,7 @@ const res = await fetch(
     h("label", {}, "Thumbnail"),
     product.thumbnail_url &&
       h("img", {
-        //src: product.thumbnail_url,
+        src: getThumbnailUrl(product.thumbnail_url)|| "/assets/images/placeholder-large.svg",
         style: { maxWidth: "120px", display: "block" },
       }),
 
