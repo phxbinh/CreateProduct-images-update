@@ -117,12 +117,27 @@ function AdminProductEditPage({ params }) {
   if (error) {
     return h("p", { style: { color: "red" } }, error);
   }
-  
+  /*
   const getThumbnailUrl = (path) => {
   if (!path) return ''; // fallback
   const { data } = supabase.storage.from('product-images').getPublicUrl(path);
   return data.publicUrl; // hoặc thêm transform: { width: 300, height: 300 }
 };
+*/
+
+const getThumbnailUrl = (path, updatedAt) => {
+  if (!path) return '';
+
+  const { data } = supabase
+    .storage
+    .from('product-images')
+    .getPublicUrl(path);
+
+  return `${data.publicUrl}?v=${new Date(updatedAt).getTime()}`;
+};
+
+
+
 
   /* =========================
      Submit
@@ -264,7 +279,8 @@ const res = await fetch(
     h("label", {}, "Thumbnail"),
     product.thumbnail_url &&
       h("img", {
-        src: getThumbnailUrl(product.thumbnail_url)|| "/assets/images/placeholder-large.svg",
+        //src: getThumbnailUrl(product.thumbnail_url)|| "/assets/images/placeholder-large.svg",
+        src: getThumbnailUrl(product.thumbnail_url, product.updated_at)|| "/assets/images/placeholder-large.svg",
         style: { maxWidth: "120px", display: "block" },
       }),
 
