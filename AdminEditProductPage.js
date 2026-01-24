@@ -1,21 +1,17 @@
-
 async function uploadProductThumbnail(productId, file) {
-  const fileExt = file.name.split(".").pop().toLowerCase(); // lowercase cho an toàn
-  const fileName = `${productId}.${fileExt}`; // ví dụ: 123.jpg
-  const filePath = `products/${fileName}`;   // thuần path: products/123.jpg
+  const fileExt = file.name.split(".").pop().toLowerCase();
+  const fileName = `${productId}.${fileExt}`;
+  const filePath = `products/${fileName}`;
 
   const { error } = await supabase.storage
     .from("product-images")
     .upload(filePath, file, {
-      upsert: true,   //false           // cho phép overwrite thumbnail cũ
-      contentType: file.type,    // giữ MIME type đúng (image/jpeg, image/webp...)
+      upsert: true,
+      contentType: file.type,
     });
 
   if (error) throw error;
-  
-  alert(filePath);
 
-  // Trả về thuần path thay vì full URL
   return filePath;
 }
 
@@ -25,7 +21,7 @@ async function getThumbnailUrl(path) {
   const { data, error } = await supabase
     .storage
     .from('product-images')
-    .createSignedUrl(path, 60); // 60 giây
+    .createSignedUrl(path, 300); // ⬅️ FIX: tăng TTL
 
   if (error) {
     console.error(error);
@@ -34,7 +30,6 @@ async function getThumbnailUrl(path) {
 
   return data.signedUrl;
 }
-
 
 function AdminProductEditPage({ params }) {
 
@@ -46,7 +41,10 @@ function AdminProductEditPage({ params }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-  const [thumbnailUrl, setThumbnailUrl] = useEffect("/assets/images/placeholder-large.svg");
+
+  // ❗ FIX: dùng useState, không phải useEffect
+  const [thumbnailUrl, setThumbnailUrl] =
+    useState("/assets/images/placeholder-large.svg");
 
   /* =========================
      Load product
@@ -82,6 +80,20 @@ function AdminProductEditPage({ params }) {
     return () => (mounted = false);
   }, [productId]);
 
+  /* =========================
+     Load thumbnail (SIGNED URL)
+     ========================= */
+  useEffect(() => {
+    if (!product?.thumbnail_url) return;
+
+    async function load() {
+      const url = await getThumbnailUrl(product.thumbnail_url);
+      setThumbnailUrl(url || "/assets/images/placeholder-large.svg");
+    }
+
+    load();
+  }, [product?.thumbnail_url]);
+
   if (loading) {
     return h("p", {}, "Đang tải sản phẩm...");
   }
@@ -89,15 +101,6 @@ function AdminProductEditPage({ params }) {
   if (error) {
     return h("p", { style: { color: "red" } }, error);
   }
-  
-
-useEffect(() => {
-  async function load() {
-    const url = await getThumbnailUrl(product.thumbnail_url);
-    setThumbnailUrl(url);
-  }
-  load();
-}, [product.thumbnail_url]);
 
   /* =========================
      Submit
@@ -108,15 +111,16 @@ useEffect(() => {
 
       let thumbnail_url = product.thumbnail_url;
 
-      // Upload thumbnail nếu có
+      // ⬅️ Upload + refresh signed URL ngay
       if (thumbnailFile) {
         thumbnail_url = await uploadProductThumbnail(
           product.id,
           thumbnailFile
         );
-        alert('thumbnail_url: '+thumbnail_url);
-      }
 
+        const freshUrl = await getThumbnailUrl(thumbnail_url);
+        setThumbnailUrl(freshUrl);
+      }
 
       const { data: { session } } =
         await supabase.auth.getSession();
@@ -124,7 +128,6 @@ useEffect(() => {
       if (!session) {
         throw new Error("Not authenticated");
       }
-
 
       const res = await fetch(
         `/api/products/${product.id}`,
@@ -148,7 +151,8 @@ useEffect(() => {
       if (!res.ok) throw new Error(result.error);
 
       alert("Cập nhật sản phẩm thành công");
-      location.reload(); // reload để lấy updated_at mới
+      location.reload();
+
     } catch (e) {
       alert(e.message);
     } finally {
@@ -202,11 +206,11 @@ useEffect(() => {
     ),
 
     h("label", {}, "Thumbnail"),
-    product.thumbnail_url &&
-      h("img", {
-        src: thumbnailUrl,
-        style: { maxWidth: "120px", display: "block" },
-      }),
+    h("img", {
+      src: thumbnailUrl,
+      key: thumbnailUrl, // ⬅️ FIX: force re-render
+      style: { maxWidth: "120px", display: "block" },
+    }),
 
     h("input", {
       type: "file",
