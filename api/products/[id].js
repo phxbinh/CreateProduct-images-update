@@ -104,6 +104,7 @@ export default async function handler(
   );
 
   if (rpcError) {
+    alert('rpcError.message: '+rpcError.message)
     return res.status(409).json({
       error: rpcError.message,
     });
