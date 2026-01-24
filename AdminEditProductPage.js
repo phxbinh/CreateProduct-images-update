@@ -122,6 +122,7 @@ function AdminProductEditPage({ params }) {
         throw new Error("Not authenticated");
       }
 
+/*
       const res = await fetch(
         `/api/products/${product.id}`,
         {
@@ -139,6 +140,25 @@ function AdminProductEditPage({ params }) {
           }),
         }
       );
+*/
+
+const res = await fetch(
+  `${window.location.origin}/api/products/${product.id}`,
+  {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${session.access_token}`,
+    },
+    body: JSON.stringify({
+      expected_updated_at: new Date(product.updated_at).toISOString(),
+      data: {
+        ...form,
+        thumbnail_url,
+      },
+    }),
+  }
+);
 
       const result = await res.json();
       if (!res.ok) throw new Error(result.error);
