@@ -93,6 +93,7 @@ export default async function handler(
   }
 
   /* ---------------- CALL RPC ---------------- */
+/*
   const { error: rpcError } = await supabase.rpc(
     'admin_update_product',
     {
@@ -110,6 +111,16 @@ export default async function handler(
       error: rpcError.message,
     });
   }
+*/
+
+
+
+const { data, error } = await supabase.rpc('admin_update_product', { payload: { product_id: id, expected_updated_at, data } });
+if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+return NextResponse.json(data);
+
+
+
 
   return res.json({ success: true });
 }
