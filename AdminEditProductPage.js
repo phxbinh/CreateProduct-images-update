@@ -133,8 +133,8 @@ function AdminProductEditPage({ params }) {
           body: JSON.stringify({
             expected_updated_at: product.updated_at,
             data: {
-              ...form,
-              thumbnail_url,
+              ...form
+              //thumbnail_url,
             },
           }),
         }
@@ -200,7 +200,7 @@ function AdminProductEditPage({ params }) {
     h("label", {}, "Thumbnail"),
     product.thumbnail_url &&
       h("img", {
-        src: product.thumbnail_url,
+        //src: product.thumbnail_url,
         style: { maxWidth: "120px", display: "block" },
       }),
 
