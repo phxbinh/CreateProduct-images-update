@@ -24,3 +24,14 @@ Tạo API ở server
 ## Cài đặt Environment Variables
 -> SUPABASE_URL (lấy API URL trong supabase)  
 -> SUPABASE_SERVER_ROLE_KEY (lấy API server key trong supabase)
+
+## Thêm vercel.json
+```json
+{
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/:path*" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ]
+}
+```
+
