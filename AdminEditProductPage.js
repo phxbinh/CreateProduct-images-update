@@ -1,4 +1,4 @@
-/*
+/* n
 async function uploadProductThumbnail(productId, file) {
   const fileExt = file.name.split(".").pop();
   const filePath = `products/${productId}.${fileExt}`;
