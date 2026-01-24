@@ -206,7 +206,8 @@ if (thumbnailFile) {
       if (!res.ok) throw new Error(result.error);
 
       alert("Cập nhật sản phẩm thành công");
-      location.reload(); // reload để lấy updated_at mới
+      //location.reload(); // reload để lấy updated_at mới
+      navigateTo(`/admin/products/${product.id}`);
     } catch (e) {
       alert(e.message);
     } finally {
