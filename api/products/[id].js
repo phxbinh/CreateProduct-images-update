@@ -80,6 +80,7 @@ export default async function handler(
   }
 
   /* ---------------- PAYLOAD ---------------- */
+try {
   const { expected_updated_at, data } = req.body;
 
   if (!expected_updated_at) {
@@ -118,7 +119,7 @@ export default async function handler(
 
 // Ví dụ trong PUT handler của /api/products/[id]
 
-try {
+
   const { error: rpcError } = await supabase.rpc(
     'admin_update_product',
     {
