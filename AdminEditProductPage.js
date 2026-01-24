@@ -123,7 +123,7 @@ function AdminProductEditPage({ params }) {
       }
 
       const res = await fetch(
-        `${window.location.origin}/api/products/${product.id}`,
+        `/api/products/${product.id}`,
         {
           method: "PUT",
           headers: {
