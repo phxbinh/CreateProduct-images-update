@@ -1,92 +1,69 @@
 import { createClient } from '@supabase/supabase-js';
 
 export const runtime = 'edge';
+//import { createClient } from '@supabase/supabase-js';
 
-export default async function handler(req: Request) {
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return new Response(
-      JSON.stringify({ error: 'Method not allowed' }),
-      { status: 405 }
-    );
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   // 1. Auth header
-  const authHeader = req.headers.get('authorization');
+  const authHeader = req.headers.authorization;
   const token = authHeader?.startsWith('Bearer ')
     ? authHeader.slice(7)
     : null;
 
   if (!token) {
-    return new Response(
-      JSON.stringify({ error: 'Missing token' }),
-      { status: 401 }
-    );
+    return res.status(401).json({ error: 'Missing token' });
   }
 
   // 2. Service role client
   const supabase = createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
   );
 
   // 3. Verify user
-  const { data: { user }, error: userError } =
-    await supabase.auth.getUser(token);
-
-  if (userError || !user) {
-    return new Response(
-      JSON.stringify({ error: 'Invalid token' }),
-      { status: 401 }
-    );
+  const { data: { user } } = await supabase.auth.getUser(token);
+  if (!user) {
+    return res.status(401).json({ error: 'Invalid token' });
   }
 
   // 4. Check admin
-  const { data: profile, error: profileError } =
-    await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
 
-  if (profileError || profile?.role !== 'admin') {
-    return new Response(
-      JSON.stringify({ error: 'Forbidden' }),
-      { status: 403 }
-    );
+  if (profile?.role !== 'admin') {
+    return res.status(403).json({ error: 'Forbidden' });
   }
 
   // 5. Parse FormData
   const formData = await req.formData();
-  const file = formData.get('file') as File | null;
-  const productId = formData.get('product_id') as string | null;
+  const file = formData.get('file');
+  const productId = formData.get('product_id');
 
   if (!file || !productId) {
-    return new Response(
-      JSON.stringify({ error: 'Missing file or product_id' }),
-      { status: 400 }
-    );
+    return res.status(400).json({ error: 'Missing file or product_id' });
   }
 
-  const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+  const ext = file.name.split('.').pop().toLowerCase();
   const filePath = `products/${productId}.${ext}`;
 
-  // 6. Upload (overwrite thật)
-  const { error: uploadError } = await supabase.storage
+  // 6. Upload (overwrite chắc chắn)
+  const { error } = await supabase.storage
     .from('product-images')
     .upload(filePath, file, {
       upsert: true,
       contentType: file.type,
     });
 
-  if (uploadError) {
-    return new Response(
-      JSON.stringify({ error: uploadError.message }),
-      { status: 500 }
-    );
+  if (error) {
+    return res.status(500).json({ error: error.message });
   }
 
-  return new Response(
-    JSON.stringify({ path: filePath }),
-    { status: 200 }
-  );
+  return res.json({ path: filePath });
 }
