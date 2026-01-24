@@ -61,7 +61,14 @@ function AdminProductList() {
   if (products.length === 0) {
     return h("p", {}, "Chưa có sản phẩm nào");
   }
+  
+const getThumbnailUrl = (path) => {
+  if (!path) return ''; // fallback
+  const { data } = supabase.storage.from('product-images').getPublicUrl(path);
+  return data.publicUrl; // hoặc thêm transform: { width: 300, height: 300 }
+};
 
+          
   /* =========================
      Render table
      ========================= */
@@ -94,7 +101,7 @@ function AdminProductList() {
             h("td", {}, 
               p.thumbnail_url
                 ? h("img", {
-                    src: p.thumbnail_url,
+                    src: getThumbnailUrl(product.thumbnail_url)|| "/assets/images/placeholder-large.svg",
                     style: { width: "48px", height: "48px", objectFit: "cover" },
                   })
                 : "—"
