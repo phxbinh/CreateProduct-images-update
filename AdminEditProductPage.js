@@ -1,24 +1,3 @@
-/*
-async function uploadProductThumbnail(productId, file) {
-  const fileExt = file.name.split(".").pop();
-  const filePath = `products/${productId}.${fileExt}`;
-
-  const { error } = await supabase.storage
-    .from("product-images")
-    .upload(filePath, file, {
-      upsert: true,
-      contentType: file.type,
-    });
-
-  if (error) throw error;
-
-  const { data } = supabase.storage
-    .from("product-images")
-    .getPublicUrl(filePath);
-
-  return data.publicUrl;
-}
-*/
 
 async function uploadProductThumbnail(productId, file) {
   const fileExt = file.name.split(".").pop().toLowerCase(); // lowercase cho an toàn
@@ -40,33 +19,25 @@ async function uploadProductThumbnail(productId, file) {
   return filePath;
 }
 
+async function getThumbnailUrl(path) {
+  if (!path) return '';
 
-async function uploadProductThumbnailViaApi(productId, file, session) {
-  const form = new FormData();
-  form.append('file', file);
-  form.append('product_id', productId);
+  const { data, error } = await supabase
+    .storage
+    .from('product-images')
+    .createSignedUrl(path, 60); // 60 giây
 
-  const res = await fetch('/api/products/upload-product-thumbnail-api', {
-    method: 'PUT',
-    headers: {
-      Authorization: `Bearer ${session.access_token}`,
-    },
-    body: form,
-  });
+  if (error) {
+    console.error(error);
+    return '';
+  }
 
-  const json = await res.json();
-  if (!res.ok) throw new Error(json.error);
-
-  return json.path; // products/xxx.jpg
+  return data.signedUrl;
 }
 
 
-
 function AdminProductEditPage({ params }) {
-    /*
-  const { h } = window.App.VDOM;
-  const { useState, useEffect } = window.App.Hooks;
-    */
+
   const productId = params?.id;
 
   const [product, setProduct] = useState(null);
@@ -75,6 +46,7 @@ function AdminProductEditPage({ params }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [thumbnailUrl, setThumbnailUrl] = useEffect("/assets/images/placeholder-large.svg");
 
   /* =========================
      Load product
@@ -118,30 +90,14 @@ function AdminProductEditPage({ params }) {
     return h("p", { style: { color: "red" } }, error);
   }
   
-  
-  
-  
-  /*
-  const getThumbnailUrl = (path) => {
-  if (!path) return ''; // fallback
-  const { data } = supabase.storage.from('product-images').getPublicUrl(path);
-  return data.publicUrl; // hoặc thêm transform: { width: 300, height: 300 }
-};
-*/
 
-const getThumbnailUrl = (path, updatedAt) => {
-  if (!path) return '';
-
-  const { data } = supabase
-    .storage
-    .from('product-images')
-    .getPublicUrl(path);
-
-  return `${data.publicUrl}?v=${new Date(updatedAt).getTime()}`;
-};
-
-
-
+useEffect(() => {
+  async function load() {
+    const url = await getThumbnailUrl(product.thumbnail_url);
+    setThumbnailUrl(url);
+  }
+  load();
+}, [product.thumbnail_url]);
 
   /* =========================
      Submit
@@ -161,20 +117,6 @@ const getThumbnailUrl = (path, updatedAt) => {
         alert('thumbnail_url: '+thumbnail_url);
       }
 
-/*
-if (thumbnailFile) {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) throw new Error('Not authenticated');
-
-  thumbnail_url = await uploadProductThumbnailViaApi(
-    product.id,
-    thumbnailFile,
-    session
-  );
-
-  alert('thumbnail_url: ' + thumbnail_url);
-}
-*/
 
       const { data: { session } } =
         await supabase.auth.getSession();
@@ -262,8 +204,7 @@ if (thumbnailFile) {
     h("label", {}, "Thumbnail"),
     product.thumbnail_url &&
       h("img", {
-        //src: getThumbnailUrl(product.thumbnail_url)|| "/assets/images/placeholder-large.svg",
-        src: getThumbnailUrl(product.thumbnail_url, product.updated_at)|| "/assets/images/placeholder-large.svg",
+        src: thumbnailUrl,
         style: { maxWidth: "120px", display: "block" },
       }),
 
