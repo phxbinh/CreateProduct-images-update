@@ -75,6 +75,7 @@ export default async function handler(
   }
 
   if (!req.body || typeof req.body !== 'object') {
+    alert('rpcError.message: '+rpcError.message)
     return res.status(400).json({ error: 'Invalid JSON body' });
   }
 
