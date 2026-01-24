@@ -1,7 +1,7 @@
+/*
 async function uploadProductThumbnail(productId, file) {
-  const fileExt = file.name.split(".").pop().toLowerCase();
-  const fileName = `${productId}.${fileExt}`;
-  const filePath = `products/${fileName}`;
+  const fileExt = file.name.split(".").pop();
+  const filePath = `products/${productId}.${fileExt}`;
 
   const { error } = await supabase.storage
     .from("product-images")
@@ -12,27 +12,61 @@ async function uploadProductThumbnail(productId, file) {
 
   if (error) throw error;
 
+  const { data } = supabase.storage
+    .from("product-images")
+    .getPublicUrl(filePath);
+
+  return data.publicUrl;
+}
+*/
+
+async function uploadProductThumbnail(productId, file) {
+  const fileExt = file.name.split(".").pop().toLowerCase(); // lowercase cho an toàn
+  const fileName = `${productId}.${fileExt}`; // ví dụ: 123.jpg
+  const filePath = `products/${fileName}`;   // thuần path: products/123.jpg
+
+  const { error } = await supabase.storage
+    .from("product-images")
+    .upload(filePath, file, {
+      upsert: true,   //false           // cho phép overwrite thumbnail cũ
+      contentType: file.type,    // giữ MIME type đúng (image/jpeg, image/webp...)
+    });
+
+  if (error) throw error;
+  
+  alert(filePath);
+
+  // Trả về thuần path thay vì full URL
   return filePath;
 }
 
-async function getThumbnailUrl(path) {
-  if (!path) return '';
 
-  const { data, error } = await supabase
-    .storage
-    .from('product-images')
-    .createSignedUrl(path, 300); // ⬅️ FIX: tăng TTL
+async function uploadProductThumbnailViaApi(productId, file, session) {
+  const form = new FormData();
+  form.append('file', file);
+  form.append('product_id', productId);
 
-  if (error) {
-    console.error(error);
-    return '';
-  }
+  const res = await fetch('/api/products/upload-product-thumbnail-api', {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${session.access_token}`,
+    },
+    body: form,
+  });
 
-  return data.signedUrl;
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error);
+
+  return json.path; // products/xxx.jpg
 }
 
-function AdminProductEditPage({ params }) {
 
+
+function AdminProductEditPage({ params }) {
+    /*
+  const { h } = window.App.VDOM;
+  const { useState, useEffect } = window.App.Hooks;
+    */
   const productId = params?.id;
 
   const [product, setProduct] = useState(null);
@@ -41,10 +75,6 @@ function AdminProductEditPage({ params }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-
-  // ❗ FIX: dùng useState, không phải useEffect
-  const [thumbnailUrl, setThumbnailUrl] =
-    useState("/assets/images/placeholder-large.svg");
 
   /* =========================
      Load product
@@ -80,20 +110,6 @@ function AdminProductEditPage({ params }) {
     return () => (mounted = false);
   }, [productId]);
 
-  /* =========================
-     Load thumbnail (SIGNED URL)
-     ========================= */
-  useEffect(() => {
-    if (!product?.thumbnail_url) return;
-
-    async function load() {
-      const url = await getThumbnailUrl(product.thumbnail_url);
-      setThumbnailUrl(url || "/assets/images/placeholder-large.svg");
-    }
-
-    load();
-  }, [product?.thumbnail_url]);
-
   if (loading) {
     return h("p", {}, "Đang tải sản phẩm...");
   }
@@ -101,6 +117,31 @@ function AdminProductEditPage({ params }) {
   if (error) {
     return h("p", { style: { color: "red" } }, error);
   }
+  
+  
+  
+  
+  /*
+  const getThumbnailUrl = (path) => {
+  if (!path) return ''; // fallback
+  const { data } = supabase.storage.from('product-images').getPublicUrl(path);
+  return data.publicUrl; // hoặc thêm transform: { width: 300, height: 300 }
+};
+*/
+
+const getThumbnailUrl = (path, updatedAt) => {
+  if (!path) return '';
+
+  const { data } = supabase
+    .storage
+    .from('product-images')
+    .getPublicUrl(path);
+
+  return `${data.publicUrl}?v=${new Date(updatedAt).getTime()}`;
+};
+
+
+
 
   /* =========================
      Submit
@@ -111,16 +152,29 @@ function AdminProductEditPage({ params }) {
 
       let thumbnail_url = product.thumbnail_url;
 
-      // ⬅️ Upload + refresh signed URL ngay
+      // Upload thumbnail nếu có
       if (thumbnailFile) {
         thumbnail_url = await uploadProductThumbnail(
           product.id,
           thumbnailFile
         );
-
-        const freshUrl = await getThumbnailUrl(thumbnail_url);
-        setThumbnailUrl(freshUrl);
+        alert('thumbnail_url: '+thumbnail_url);
       }
+
+/*
+if (thumbnailFile) {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) throw new Error('Not authenticated');
+
+  thumbnail_url = await uploadProductThumbnailViaApi(
+    product.id,
+    thumbnailFile,
+    session
+  );
+
+  alert('thumbnail_url: ' + thumbnail_url);
+}
+*/
 
       const { data: { session } } =
         await supabase.auth.getSession();
@@ -128,6 +182,7 @@ function AdminProductEditPage({ params }) {
       if (!session) {
         throw new Error("Not authenticated");
       }
+
 
       const res = await fetch(
         `/api/products/${product.id}`,
@@ -151,8 +206,7 @@ function AdminProductEditPage({ params }) {
       if (!res.ok) throw new Error(result.error);
 
       alert("Cập nhật sản phẩm thành công");
-      location.reload();
-
+      location.reload(); // reload để lấy updated_at mới
     } catch (e) {
       alert(e.message);
     } finally {
@@ -206,11 +260,12 @@ function AdminProductEditPage({ params }) {
     ),
 
     h("label", {}, "Thumbnail"),
-    h("img", {
-      src: thumbnailUrl,
-      key: thumbnailUrl, // ⬅️ FIX: force re-render
-      style: { maxWidth: "120px", display: "block" },
-    }),
+    product.thumbnail_url &&
+      h("img", {
+        //src: getThumbnailUrl(product.thumbnail_url)|| "/assets/images/placeholder-large.svg",
+        src: getThumbnailUrl(product.thumbnail_url, product.updated_at)|| "/assets/images/placeholder-large.svg",
+        style: { maxWidth: "120px", display: "block" },
+      }),
 
     h("input", {
       type: "file",
