@@ -1,4 +1,4 @@
-/* n
+
 async function uploadProductThumbnail(productId, file) {
   const fileExt = file.name.split(".").pop();
   const filePath = `products/${productId}.${fileExt}`;
@@ -18,8 +18,8 @@ async function uploadProductThumbnail(productId, file) {
 
   return data.publicUrl;
 }
-*/
 
+/*
 async function uploadProductThumbnail(productId, file) {
   const fileExt = file.name.split(".").pop().toLowerCase(); // lowercase cho an toàn
   const fileName = `${productId}.${fileExt}`; // ví dụ: 123.jpg
@@ -39,7 +39,7 @@ async function uploadProductThumbnail(productId, file) {
   // Trả về thuần path thay vì full URL
   return filePath;
 }
-
+*/
 
 async function uploadProductThumbnailViaApi(productId, file, session) {
   const form = new FormData();
@@ -134,7 +134,6 @@ function AdminProductEditPage({ params }) {
       let thumbnail_url = product.thumbnail_url;
 
       // Upload thumbnail nếu có
-/*
       if (thumbnailFile) {
         thumbnail_url = await uploadProductThumbnail(
           product.id,
@@ -142,8 +141,8 @@ function AdminProductEditPage({ params }) {
         );
         alert('thumbnail_url: '+thumbnail_url);
       }
-*/
 
+/*
 if (thumbnailFile) {
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) throw new Error('Not authenticated');
@@ -156,7 +155,7 @@ if (thumbnailFile) {
 
   alert('thumbnail_url: ' + thumbnail_url);
 }
-
+*/
 
       const { data: { session } } =
         await supabase.auth.getSession();
