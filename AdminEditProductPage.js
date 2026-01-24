@@ -46,8 +46,8 @@ async function uploadProductThumbnailViaApi(productId, file, session) {
   form.append('file', file);
   form.append('product_id', productId);
 
-  const res = await fetch('/api/products/upload-product-thumbnail', {
-    method: 'POST',
+  const res = await fetch('/api/products/upload-product-thumbnail-api', {
+    method: 'PUT',
     headers: {
       Authorization: `Bearer ${session.access_token}`,
     },
@@ -117,6 +117,10 @@ function AdminProductEditPage({ params }) {
   if (error) {
     return h("p", { style: { color: "red" } }, error);
   }
+  
+  
+  
+  
   /*
   const getThumbnailUrl = (path) => {
   if (!path) return ''; // fallback
@@ -197,27 +201,6 @@ if (thumbnailFile) {
           }),
         }
       );
-
-
-/*
-const res = await fetch(
-  `${window.location.origin}/api/products/${product.id}`,
-  {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${session.access_token}`,
-    },
-    body: JSON.stringify({
-      expected_updated_at: new Date(product.updated_at).toISOString(),
-      data: {
-        ...form,
-        thumbnail_url,
-      },
-    }),
-  }
-);
-*/
 
       const result = await res.json();
       if (!res.ok) throw new Error(result.error);
