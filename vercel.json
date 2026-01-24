@@ -1,5 +1,9 @@
 {
   "rewrites": [
+    // 1. Giữ nguyên API routes (không rewrite /api/...)
+    { "source": "/api/:path*", "destination": "/api/:path*" },
+    
+    // 3. Fallback cho mọi path còn lại → /index.html (SPA client routing)
     { "source": "/:path*", "destination": "/index.html" }
   ]
 }
