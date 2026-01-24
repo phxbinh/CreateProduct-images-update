@@ -101,7 +101,7 @@ const getThumbnailUrl = (path) => {
             h("td", {}, 
               p.thumbnail_url
                 ? h("img", {
-                    src: getThumbnailUrl(product.thumbnail_url)|| "/assets/images/placeholder-large.svg",
+                    src: getThumbnailUrl(p.thumbnail_url)|| "/assets/images/placeholder-large.svg",
                     style: { width: "48px", height: "48px", objectFit: "cover" },
                   })
                 : "—"
