@@ -47,7 +47,7 @@
 <script src="./framework/init_API.js"></script>
 <!---->
 
-<!-- INIT SUPABASE TRƯỚC -->
+<!-- INIT SUPABASE TRƯỚC --
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
@@ -100,7 +100,67 @@
     console.error('Critical error loading application scripts', err);
   });
 </script>
+<!---->
 
+
+
+<!---->
+<script type="module">
+  // Import từ CDN phiên bản mới nhất của @supabase/ssr (hỗ trợ cookie)
+  import { createBrowserClient } from 'https://cdn.jsdelivr.net/npm/@supabase/ssr@0.5.2/+esm';
+
+  const supabase = createBrowserClient(
+    'https://defkqhylqphoqiikvbii.supabase.co',
+    'sb_publishable_vzdQpgqjLL2VE0Oyc0kEJQ_P8XqBwkh'  // anon key
+  );
+
+  window.supabase = supabase;
+
+  console.log('Supabase browser client initialized with cookie persistence');
+
+  // Phần load scripts giữ nguyên
+  async function loadScriptsInOrder() {
+    const scripts = [
+      'Admin.js',
+      'newProducts.js',
+      'RenderProducts.js',
+      'RenderDetailProduct.js',
+      'AdminProductList.js',
+      'AdminEditProductPage.js',
+      'MyTasks.js',
+      'routesMenu.js'
+    ];
+
+    for (const src of scripts) {
+      await new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = () => {
+          console.log(`Loaded: ${src}`);
+          resolve();
+        };
+        script.onerror = () => {
+          console.error(`Failed to load: ${src}`);
+          reject();
+        };
+        document.body.appendChild(script);
+      });
+    }
+
+    console.log('All core scripts loaded!');
+    window.dispatchEvent(new Event('app:ready'));
+  }
+
+  loadScriptsInOrder().catch(err => {
+    console.error('Critical error loading application scripts', err);
+  });
+
+  // Optional: Kiểm tra session ngay sau init để debug
+  supabase.auth.getSession().then(({ data }) => {
+    console.log('Session on init:', data.session ? 'Active' : 'None');
+  });
+</script>
+<!---->
 
 
 
