@@ -134,7 +134,7 @@ function AdminProductEditPage({ params }) {
             expected_updated_at: product.updated_at,
             data: {
               ...form
-              //thumbnail_url,
+              thumbnail_url,
             },
           }),
         }
