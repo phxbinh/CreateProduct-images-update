@@ -41,6 +41,27 @@ async function uploadProductThumbnail(productId, file) {
 }
 
 
+async function uploadProductThumbnailViaApi(productId, file, session) {
+  const form = new FormData();
+  form.append('file', file);
+  form.append('product_id', productId);
+
+  const res = await fetch('/api/products/upload-product-thumbnail', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${session.access_token}`,
+    },
+    body: form,
+  });
+
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error);
+
+  return json.path; // products/xxx.jpg
+}
+
+
+
 function AdminProductEditPage({ params }) {
     /*
   const { h } = window.App.VDOM;
@@ -113,6 +134,7 @@ function AdminProductEditPage({ params }) {
       let thumbnail_url = product.thumbnail_url;
 
       // Upload thumbnail nếu có
+/*
       if (thumbnailFile) {
         thumbnail_url = await uploadProductThumbnail(
           product.id,
@@ -120,6 +142,21 @@ function AdminProductEditPage({ params }) {
         );
         alert('thumbnail_url: '+thumbnail_url);
       }
+*/
+
+if (thumbnailFile) {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) throw new Error('Not authenticated');
+
+  thumbnail_url = await uploadProductThumbnailViaApi(
+    product.id,
+    thumbnailFile,
+    session
+  );
+
+  alert('thumbnail_url: ' + thumbnail_url);
+}
+
 
       const { data: { session } } =
         await supabase.auth.getSession();
