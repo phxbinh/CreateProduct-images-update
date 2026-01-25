@@ -1,12 +1,16 @@
 {
   "rewrites": [
     { "source": "/api/:path*", "destination": "/api/:path*" },
-{
+    {
       "source": "/framework/:path*",
       "destination": "/framework/:path*"
     },
     {
-      "source": "/((?!api/)(?!framework/).*)",
+      "source": "/((?!framework/).*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ],
