@@ -135,7 +135,7 @@
     for (const src of scripts) {
       await new Promise((resolve, reject) => {
         const script = document.createElement('script');
-        script.src = src;
+        script.src = '/'+src;
         script.onload = () => {
           console.log(`Loaded: ${src}`);
           resolve();
