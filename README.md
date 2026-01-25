@@ -51,7 +51,7 @@ Tạo API ở server
         { "key": "Access-Control-Allow-Origin", "value": "*" },
         { "key": "Access-Control-Allow-Headers", "value": "authorization, content-type, x-requested-with" },
         { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, DELETE, PATCH, OPTIONS" },
-        { "key": "Access-Control-Max-Age", "value": "86400" }  // Cache preflight 24 giờ để giảm request OPTIONS
+        { "key": "Access-Control-Max-Age", "value": "86400" }
       ]
     },
     {
@@ -60,7 +60,7 @@ Tạo API ở server
         { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" }  // HSTS (nếu dùng HTTPS)
+        { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" }
       ]
     }
   ]
