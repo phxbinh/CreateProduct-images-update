@@ -1,5 +1,9 @@
 {
   "rewrites": [
+        { "source": "/favicon.ico", "destination": "/favicon.ico" },
+    { "source": "/favicon-:size.png", "destination": "/favicon-:size.png" },
+    { "source": "/apple-touch-icon.png", "destination": "/apple-touch-icon.png" },
+    { "source": "/site.webmanifest", "destination": "/site.webmanifest" },
     {
       "source": "/assets/:path*",
       "destination": "/assets/:path*"
