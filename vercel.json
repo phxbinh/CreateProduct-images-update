@@ -2,7 +2,7 @@
   "rewrites": [
     { "source": "/api/:path*", "destination": "/api/:path*" },
     {
-      "source": "/((?!api/)(?!framework/)(?!.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|json|woff|woff2|ttf|eot|map)$).*)",
+      "source": "/((?!api/)(?!framework/)(?!.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|json|woff|woff2|ttf|eot|map|md)$).*)",
       "destination": "/index.html"
     }
   ],
