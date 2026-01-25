@@ -1,5 +1,5 @@
 // ====================
-// Routes
+// Routes k
 // ====================
 window.App.Router.addRoute("/", Home);
 window.App.Router.addRoute("/auth", AuthPage);
