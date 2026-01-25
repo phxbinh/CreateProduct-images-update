@@ -4,8 +4,6 @@
       "source": "/(favicon.ico|favicon-.*\\.png|apple-touch-icon\\.png|android-chrome-.*\\.png|site\\.webmanifest)",
       "destination": "/$1"
     },
-
-
     {
       "source": "/assets/:path*",
       "destination": "/assets/:path*"
@@ -20,10 +18,7 @@
       "source": "/api/:path*",
       "destination": "/api/:path*"
     },
-    {
-      "source": "/:path*",
-      "destination": "/index.html"
-    }
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
 
   "headers": [
