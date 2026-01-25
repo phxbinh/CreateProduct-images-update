@@ -1,7 +1,10 @@
 {
   "rewrites": [
     { "source": "/api/:path*", "destination": "/api/:path*" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    {
+      "source": "/((?!api/)(?!framework/)(?!.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|json|woff|woff2|ttf|eot|map)$).*)",
+      "destination": "/index.html"
+    }
   ],
 
   "headers": [
