@@ -12,6 +12,7 @@ window.App.Router.addRoute("/admin/role", AdminUsersPage);
 window.App.Router.addRoute("/admin/products/create", ProductCreatePage);
 window.App.Router.addRoute("/admin/products/list", AdminProductList);
 window.App.Router.addRoute("/admin/products/:id", AdminProductEditPage);
+window.App.Router.addRoute("/admin/taskcrud", AdminTasksCRUD);
 window.App.Router.addRoute("/products", ProductListPage);
 window.App.Router.addRoute("/products/:slug", ProductDetailPage);
 
@@ -33,7 +34,8 @@ window.App.Router.navbarDynamic({
     h(Link, { to: "/admin/role", style: { color: "white", margin: "0 1rem" }, children: "Change role" }),
     h(Link, { to: "/admin/products/create", style: { color: "white", margin: "0 1rem" }, children: "CreProducts" }),
     h(Link, { to: "/products", style: { color: "white", margin: "0 1rem" }, children: "RendProducts" }),
-    h(Link, { to: "/admin/products/list", style: { color: "white", margin: "0 1rem" }, children: "Danh sách" })
+    h(Link, { to: "/admin/products/list", style: { color: "white", margin: "0 1rem" }, children: "Danh sách" }),
+    h(Link, { to: "/admin/taskcrud", style: { color: "white", margin: "0 1rem" }, children: "Viết task" })
 
   )
 });
