@@ -1,31 +1,32 @@
 {
   "rewrites": [
-        { "source": "/favicon.ico", "destination": "/favicon.ico" },
-    { "source": "/favicon-:size.png", "destination": "/favicon-:size.png" },
-    { "source": "/apple-touch-icon.png", "destination": "/apple-touch-icon.png" },
-    { "source": "/site.webmanifest", "destination": "/site.webmanifest" },
+    // 1. Exclude favicon & manifest files (đặt đầu tiên để tránh bị fallback)
+    {
+      "source": "/(favicon.ico|favicon-.*\\.png|apple-touch-icon\\.png|android-chrome-.*\\.png|site\\.webmanifest)",
+      "destination": "/$1"
+    },
+
+    // 2. Exclude assets folder (nếu bạn có)
     {
       "source": "/assets/:path*",
       "destination": "/assets/:path*"
     },
+
+    // 3. Exclude framework folder (JS core của bạn)
     {
       "source": "/framework/:path*",
       "destination": "/framework/:path*"
     },
-    {
-      "source": "/((?!framework/).*)",
-      "destination": "/index.html"
-    },
+
+    // 4. Exclude API nếu có serverless functions
     {
       "source": "/api/:path*",
       "destination": "/api/:path*"
     },
+
+    // 5. Fallback duy nhất cho SPA – để cuối cùng
     {
       "source": "/:path*",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/(.*)",
       "destination": "/index.html"
     }
   ],
