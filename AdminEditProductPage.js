@@ -46,7 +46,7 @@ async function uploadProductThumbnailViaApi(productId, file, session) {
   form.append('file', file);
   form.append('product_id', productId);
 
-  const res = await fetch('/api/products/upload-product-thumbnail-api', {
+  const res = await fetch('/api/upload-product-thumbnail-api', {
     method: 'PUT',
     headers: {
       Authorization: `Bearer ${session.access_token}`,
