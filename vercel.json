@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/favicon/:path*",
-      "destination": "/favicon/:path*"
+      "source": "/(favicon.ico|favicon-.*\\.png|apple-touch-icon\\.png|android-chrome-.*\\.png|site\\.webmanifest)",
+      "destination": "/$1"
     },
     {
       "source": "/assets/:path*",
