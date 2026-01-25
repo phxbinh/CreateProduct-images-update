@@ -1,30 +1,26 @@
 {
   "rewrites": [
-    // 1. Exclude favicon & manifest files (đặt đầu tiên để tránh bị fallback)
     {
       "source": "/(favicon.ico|favicon-.*\\.png|apple-touch-icon\\.png|android-chrome-.*\\.png|site\\.webmanifest)",
       "destination": "/$1"
     },
 
-    // 2. Exclude assets folder (nếu bạn có)
+
     {
       "source": "/assets/:path*",
       "destination": "/assets/:path*"
     },
 
-    // 3. Exclude framework folder (JS core của bạn)
     {
       "source": "/framework/:path*",
       "destination": "/framework/:path*"
     },
 
-    // 4. Exclude API nếu có serverless functions
     {
       "source": "/api/:path*",
       "destination": "/api/:path*"
     },
 
-    // 5. Fallback duy nhất cho SPA – để cuối cùng
     {
       "source": "/:path*",
       "destination": "/index.html"
