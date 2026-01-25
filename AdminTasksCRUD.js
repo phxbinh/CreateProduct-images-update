@@ -2,7 +2,7 @@
   // Helper: generate signed URL cho ảnh private
   async function getSignedUrl(path) {
     if (!path) return null;
-    const { data, error } = await App.supabase.storage
+    const { data, error } = await supabase.storage
       .from('admin-data')
       .createSignedUrl(path, 3600); // 1 giờ
     return error ? null : data.signedUrl;
@@ -31,13 +31,13 @@
     // Check role admin
     useEffect(() => {
       async function checkAdmin() {
-        const { data: { user } } = await App.supabase.auth.getUser();
+        const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
           setIsAdmin(false);
           return;
         }
 
-        const { data: profile } = await App.supabase
+        const { data: profile } = await supabase
           .from('profiles')
           .select('role')
           .eq('id', user.id)
@@ -56,7 +56,7 @@
 
       async function fetchTasks() {
         setLoading(true);
-        const { data, error } = await App.supabase
+        const { data, error } = await supabase
           .from('admin_tasks')
           .select('*')
           .order('created_at', { ascending: false });
@@ -101,7 +101,7 @@
       const fileName = `${taskId}.${fileExt}`;
       const filePath = `tasks/${taskId}/${fileName}`;
 
-      const { error } = await App.supabase.storage
+      const { error } = await supabase.storage
         .from('admin-data')
         .upload(filePath, form.imageFile, {
           upsert: true,
@@ -141,7 +141,7 @@
         let result;
         if (form.id) {
           // Update
-          result = await App.supabase
+          result = await supabase
             .from('admin_tasks')
             .update(payload)
             .eq('id', form.id)
@@ -149,7 +149,7 @@
             .single();
         } else {
           // Create
-          result = await App.supabase
+          result = await supabase
             .from('admin_tasks')
             .insert(payload)
             .select()
@@ -191,12 +191,12 @@
       try {
         // Xóa file ảnh nếu có
         if (task.image_path) {
-          await App.supabase.storage
+          await supabase.storage
             .from('admin-data')
             .remove([task.image_path]);
         }
 
-        const { error } = await App.supabase
+        const { error } = await supabase
           .from('admin_tasks')
           .delete()
           .eq('id', task.id);
